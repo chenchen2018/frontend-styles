@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>carousel</title>
+    <link rel="stylesheet" href="css/default.css">
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <ul>
+            <li class="current"><img src="img/1.jpg" alt=""></li>
+            <li><img src="img/2.jpg" alt=""></li>
+            <li><img src="img/3.jpg" alt=""></li>
+            <li><img src="img/4.jpg" alt=""></li>
+            <li><img src="img/5.jpg" alt=""></li>
+        </ul>
+        <button class="lbtn">&lt;</button>
+        <button class="rbtn">&gt;</button>
+        <ol>
+            <li class="cur">1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+        </ol>
+    </div>
+</body>
+</html>
+<script>
+    var idx = 0; // index of current image
+    function rightRotation() {
+        $("ul li").eq(idx).css({"left": 0}).stop(true).animate({"left": -640}, 500);
+        idx++;
+        idx = idx > 4 ? 0 : idx;
+        // next page gets into container
+        $("ul li").eq(idx).css({"left": 640}).stop(true).animate({"left": 0}, 500);
+        // pagination also needs to be udpated
+        $("ol li").eq(idx).addClass("cur").siblings().removeClass();
+    }
+    function leftRotation() {
+        $("ul li").eq(idx).css({"left": 0}).stop(true).animate({"left": 640}, 500);
+        idx--;
+        idx = idx < 0 ? 4 : idx;
+        // next page gets into container
+        $("ul li").eq(idx).css({"left": -640}).stop(true).animate({"left": 0}, 500);
+        // pagination also needs to be udpated
+        $("ol li").eq(idx).addClass("cur").siblings().removeClass();
+    }
+    // right button's click event
+    $(".rbtn").click(rightRotation);
+
+    // left button's click event
+    $(".lbtn").click(leftRotation);
+
+    // automated carousel
+    var timer = setInterval(rightRotation, 1500);
+    // when mouse hover over the carousel, stop automation.
+    $("div").mouseenter(function() {
+        clearInterval(timer);
+    }).mouseleave(function() {
+        timer = setInterval(rightRotation, 1500);
+    });
+
+    // pagination event
+    $("ol li").click(function() {
+        var index = $(this).index();
+        if (index > idx) {
+            while (index > idx) {
+                rightRotation();
+            }
+        } else {
+            while (index < idx) {
+                leftRotation();
+            }
+        }
+    });
+</script>
